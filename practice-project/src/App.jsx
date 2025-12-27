@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import "./App.css";
 
 function Header({ name}) {
@@ -18,7 +18,7 @@ const dishObjects = items.map((dish, i) => ({ id: i, title: dish }));
 function Main({ dishes, openStatus, onStatus }) {
 	return (
 		<div>
-			<button onClick={()=> onStatus(true)}> I want to be open </button>
+			<button onClick={()=> onStatus(!openStatus)}> I want to be {status ? "open" : "closed"} </button>
 			<div>Welcome to the restaurent {openStatus ? "is open" : "is closed"} </div>
 			
 			<ul>
@@ -33,16 +33,20 @@ function Main({ dishes, openStatus, onStatus }) {
 }
 
 function App() {
-	const [status, setStatus] = useState(true);
+	//const [status, setStatus] = useState(true);
+	const [status, toggle] = useReducer(
+		(status) => !status,
+		true
+	)
 	return (
 		<>
 			<h1>The restaurant is currently {status ? "open" : "closed"}</h1>
-			<button onClick={() => setStatus(!status)}>
+			<button onClick={toggle}>
 				{status ? "close" : "open"} Restaurant
 			</button>
 		
 			<Header name={"Eve"} />
-			<Main dishes={dishObjects} openStatus={status} onStatus={setStatus} />
+			<Main dishes={dishObjects} openStatus={status} onStatus={toggle} />
 		</>
 	);
 }
